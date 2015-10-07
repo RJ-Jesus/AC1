@@ -1,0 +1,53 @@
+		.data
+str1:
+		.asciiz "Introduza um número: "
+str2:
+		.asciiz "O valor em binário: "
+
+		.text
+		.globl main
+main:
+		# Load and print str1
+		la $a0, str1
+		ori $v0, $0, 4
+		syscall
+
+		# Read "value" -> $t0
+		ori $v0, $0, 5
+		syscall
+		or $t0, $0, $v0
+		
+		# Load and print str2
+		la $a0, str2
+		ori $v0, $0, 4
+		syscall
+		
+		ori $t8, $0, 0	# $t8 - flag for '1' found
+		# For-loop
+		ori $t7, $0, 0		# Set counter <- i
+loop:
+		beq $t7, 32, exit						# if(i == max) break;
+		addi $t7, $t7, 1						# i += 1;
+		andi $t5, $t0, 0x80000000		# bit = value & 0x80000000;
+		or $t8, $t8, $t5
+		beq $t8, $0, L1		# $t5 == 0 ? loop : continue
+		srl $t5, $t5, 31		# Bit[32] = ?
+		addi $a0, $t5, 48		# ASCII(0) = 48. 48 + Bit[32] -> '0' || '1'
+		ori $v0, $0, 11
+		syscall
+		rem $t6, $t7, 4		# !(i % 4) ? loop : print_char(' ');
+		bne $t6, $0, L1
+		ori $a0, $0, 32
+		ori $v0, $0, 11		# $v0 was already 11 - print_char, but...
+		syscall
+L1:
+		sll $t0, $t0, 1		# value = value << 1;
+		j loop
+exit:
+		# If no '1' was found, print '0'
+		bne $t8, 0, end
+		ori $a0, $0, 48
+		ori $v0, $0, 11
+		syscall
+end:
+		jr $ra

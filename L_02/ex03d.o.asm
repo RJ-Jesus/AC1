@@ -20,7 +20,7 @@ main:
 			# Read b (+ sum)
 			ori $v0, $0, 5
 			syscall
-			add $t1, $v0, $t0
+			add $t0, $t0, $v0
 			
 			# Load and print str2
 			la $a0, str2

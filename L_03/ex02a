@@ -1,0 +1,60 @@
+		.data
+str1:
+		.asciiz "Introduza um número: "
+str2:
+		.asciiz "O valor em hexadecimal: "
+
+		.text
+		.globl main
+main:
+		#####
+		# t0 - value
+		# t1 - dígito
+		# t2 - i
+		#####
+		
+		# Load and print str1
+		la $a0, str1
+		ori $v0, $0, 4
+		syscall
+
+		# Read "value" -> $t0
+		ori $v0, $0, 5
+		syscall
+		or $t0, $0, $v0
+		
+		# Load and print str2
+		la $a0, str2
+		ori $v0, $0, 4
+		syscall
+		
+		ori $t2, $0, 8		# i = 8
+loop1:
+		andi $t3, $t0, 0xF0000000		# tmp = value & 0xF0000000
+		bne $t3, 0, loop2						# tmp != 0 -> GOTO loop2
+		beq $t2, 0, loop2						# i > 0 -> GOTO loop2
+		sll $t0, $t0, 4							# value = value << 4
+		addi $t2, $t2, -1						# i--
+		j loop1
+loop2:
+		andi $t3, $t0, 0xF0000000		# tmp = value & 0xF0000000
+		srl $t1, $t3, 28						# dígito = tmp >> 28
+		slti $t3, $t1, 10						# tmp = dígito < 10
+		beq $t3, 0, else1						# tmp == 0 -> GOTO else
+if1:
+		addi $a0, $t1, 48						# print_char(dígito + '0')
+		j cont1
+else1:
+		addi $a0, $t1, 55						# print_char(dígito + '0' + 7)
+cont1:
+		ori $v0, $0, 11
+		syscall											# print_char - syscall
+		sll $t0, $t0, 4							# value = value << 4
+		addi $t2, $t2, -1						# i--
+		slti $t3, $t2, 1						# tmp = i < 1
+		bne $t3, 0, end							# tmp != 0 -> GOTO exit
+		j loop2
+exit:
+		
+end:
+		jr $ra
