@@ -1,0 +1,34 @@
+			.data
+str:	.space 20			# str[20]
+			
+		.text
+		.globl main
+main:
+		#####
+		# num := $t0
+		# i := $t1
+		#####
+		
+		la $a0, str				# Buffer
+		ori $a1, $0, 20		# Size
+		ori $v0, $0, 8		# read_str
+		syscall
+		
+		ori $t0, $0, 0		# num = 0
+		ori $t1, $0, 0		# i = 0
+		la $t2, str
+		
+while1:
+		add $t3, $t1, $t2		# $t3 <- i + base_address
+		lb $t4, $t3					# $t4 <- str[i]
+		bne $t4, 0, end1	
+		slt $t5, $t4, 48
+		bne $t5, 0, cont1
+		slt $t5, $t4, 58
+		beq $t5, 0, cont1
+		addi $t0, $t0, 1
+		
+cont1:
+		addi $t1, $t1, 1
+
+end1:
