@@ -2,11 +2,10 @@
         .data
 arr:    .double 0:n
 str1:   .asciiz "Average: "
-str2:   .asciiz "Maximum: "
         .align 2
         .text
-        .globl ex04b
-ex04b:  #####
+        .globl ex03b
+ex03b:  #####
         # $s0 <- arr
         # $s1 <- int i
         #####
@@ -33,18 +32,6 @@ done1:  la $a0, str1
         mov.d $f12, $f0
         li $v0, 3
         syscall               # print_double(average(arr, n))
-        li $a0, '\n'
-        li $v0, 11
-        syscall               # print_char('\n')
-        la $a0, str2
-        li $v0, 4
-        syscall               # print_str(str2)
-        or $a0, $0, $s0
-        li $a1, n
-        jal max               # max(arr, n)
-        mov.d $f12, $f0
-        li $v0, 3
-        syscall               # print_double(max(arr, n))
         li $a0, '\n'
         li $v0, 11
         syscall               # print_char('\n')
