@@ -14,12 +14,12 @@ int main(int argc, char *argv[]) {
         else if(op == '%')
             res = div(val1, val2) >> 16;
         else {
-            print_str("\nOperaÃ§Ã£o desconhecida");
+            print_str("\nOperação desconhecida");
             exit_code = 1;
         }
     }
     else {
-        print_str("\nNÃºmero de argumentos errado");
+        print_str("\nNúmero de argumentos errado");
         exit_code = 2;
     }
     if(exit_code == 0) {

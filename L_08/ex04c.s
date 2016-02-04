@@ -3,8 +3,8 @@ str1:   .asciiz "\nOperação desconhecida"
 str2:   .asciiz "\nNúmero de argumentos errado"
         .align 2
         .text
-        .globl ex04b
-ex04b:  #####
+        .globl ex04c
+ex04c:  #####
         # $a0 <- int argc
         # $s0 <- $a1 <- char *argv[]
         # $s1 <- int val1
@@ -44,14 +44,14 @@ if2:    bne $s5, 'x', ei2_2     # if(op == 'x')
 ei2_2:  bne $s5, '/', ei2_3     # else if(op == '/')
         or $a0, $0, $s1
         or $a1, $0, $s2
-        jal div_                # div(val1, val2)
+        jal div_2               # div(val1, val2)
         andi $s3, $v0, 0xFFFF   # res = div(val1, val2) & 0x0000FFFF
         b fi2
         
 ei2_3:  bne $s5, '%', else2     # else if(op == '%')
         or $a0, $0, $s1
         or $a1, $0, $s2
-        jal div_                # div(val1, val2)
+        jal div_2               # div(val1, val2)
         srl $s3, $v0, 16        # res = div(val1, val2) >> 16
         b fi2
 

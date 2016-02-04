@@ -10,7 +10,7 @@ unsigned int div(unsigned int dividendo, unsigned int divisor) {
             dividendo = dividendo - divisor;
             bit = 1;
         }
-        else if(i == 15)   // caso contr√°rio perde-se o bit
+        else if(i == 15)   // caso contr·rio perde-se o bit
             flag_bit = dividendo & 0x80000000;
         dividendo = (dividendo << 1) | bit;
     }
