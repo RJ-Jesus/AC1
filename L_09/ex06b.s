@@ -1,6 +1,6 @@
         .text
-        .globl ex06a
-ex06a:  addiu $sp, $sp, -4
+        .globl ex06b
+ex06b:  addiu $sp, $sp, -4
         sw $ra, 0($sp)
         
         li $a0, 10
