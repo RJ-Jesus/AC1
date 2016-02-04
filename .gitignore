@@ -107,11 +107,6 @@ $RECYCLE.BIN/
 *.lnk
 
 
-### Assembler ###
-*.[sS]
-*.bc
-
-
 ### C ###
 # Object files
 *.o
