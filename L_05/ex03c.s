@@ -6,13 +6,12 @@ str:    .asciiz "Introduza um número: "
         .text
         .globl main
 main:   #####
-        # $t0 <- lista
+        # $t0 <- int houveTroca
         # $t1 <- int i
-        # $t2 <- int j
+        # $t2 <- lista
         # $t3 <- &lista[i]
-        # $t4 <- &lista[j]
-        # $t5 <- int aux = lista[i]
-        # $t6 <- lista[j]
+        # $t4 <- int aux = lista[i]
+        # $t5 <- lista[i + 1]
         #####
         addiu $sp, $sp, -4
         sw $ra, 0($sp)
@@ -21,25 +20,23 @@ main:   #####
         ori $a1, $0, SIZE
         jal fillArray             # fillArray(lista, SIZE)
         
-        la $t0, lista
+        la $t2, lista
+do1:    li $t0, 0                 # houveTroca = FALSE
         li $t1, 0                 # i = 0
-for1:   bge $t1, 9, done1         # for(*; i < SIZE-1; *)
-        addi $t2, $t1, 1          # j = i+1
-for2:   bge $t2, SIZE, done2      # for(*; j < SIZE; *)
+for2:   bge $t1, 9, done2         # for(*; i < SIZE-1; *)
         sll $t3, $t1, 2
-        addu $t3, $t0, $t3
-        sll $t4, $t2, 2
-        addu $t4, $t0, $t4
-        lw $t5, 0($t3)
-        lw $t6, 0($t4)
-        ble $t5, $t6, fi          # if(lista[i] > lista[j])
-        sw $t6, 0($t3)            # lista[i] = lista[j]
-        sw $t5, 0($t4)            # lista[j] = aux
-fi:     addi $t2, $t2, 1          # j++
+        addu $t3, $t2, $t3
+        lw $t4, 0($t3)
+        lw $t5, 4($t3)
+        bleu $t4, $t5, fi         # if(lista[i] > lsita[i+1])
+        sw $t5, 0($t3)            # lista[i] = lista[i + 1]
+        sw $t4, 4($t3)            # lista[i + 1] = aux
+        li $t0, 1                 # houveTroca = 1
+fi:     addi $t1, $t1, 1          # i++
         b for2
-done2:  addi $t1, $t1, 1          # i++
-        b for1
-done1:  la $a0, lista
+done2:  beq $t0, $0, done1        # while(houveTroca == TRUE)
+        b do1
+done1:  or $a0, $0, $t2
         li $a1, SIZE
         jal printArray            # printArray(lista, SIZE)
         
@@ -98,8 +95,8 @@ pA_for: bge $s2, $s1, pA_done   # for(*; i < n; i++)
         sll $a0, $s2, 2
         addu $a0, $a0, $s0
         lw $a0, 0($a0)
-        li $v0, 1
-        syscall                 # print_int10(arr[i])
+        li $v0, 36
+        syscall                 # print_int10u(arr[i])
         
         li $a0, ','
         li $v0, 11

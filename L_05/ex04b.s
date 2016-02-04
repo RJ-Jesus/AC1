@@ -6,13 +6,13 @@ str:    .asciiz "Introduza um número: "
         .text
         .globl main
 main:   #####
-        # $t0 <- lista
-        # $t1 <- int i
-        # $t2 <- int j
-        # $t3 <- &lista[i]
-        # $t4 <- &lista[j]
-        # $t5 <- int aux = lista[i]
-        # $t6 <- lista[j]
+        # $t0 <- int houveTroca
+        # $t1 <- int *p
+        # $t2 <- *pUltimo
+        # $t3 <- int aux = *p
+        # $t4 <- *(p+1)
+        # $t5 <- int i
+        # $t6 <- pUltimo - i
         #####
         addiu $sp, $sp, -4
         sw $ra, 0($sp)
@@ -21,24 +21,24 @@ main:   #####
         ori $a1, $0, SIZE
         jal fillArray             # fillArray(lista, SIZE)
         
-        la $t0, lista
-        li $t1, 0                 # i = 0
-for1:   bge $t1, 9, done1         # for(*; i < SIZE-1; *)
-        addi $t2, $t1, 1          # j = i+1
-for2:   bge $t2, SIZE, done2      # for(*; j < SIZE; *)
-        sll $t3, $t1, 2
-        addu $t3, $t0, $t3
-        sll $t4, $t2, 2
-        addu $t4, $t0, $t4
-        lw $t5, 0($t3)
-        lw $t6, 0($t4)
-        ble $t5, $t6, fi          # if(lista[i] > lista[j])
-        sw $t6, 0($t3)            # lista[i] = lista[j]
-        sw $t5, 0($t4)            # lista[j] = aux
-fi:     addi $t2, $t2, 1          # j++
+        la $t2, lista+40          # pUltimo = lista + SIZE
+        li $t5, 1                 # i = 1
+do1:    li $t0, 0                 # houveTroca = FALSE
+        la $t1, lista             # p = lista
+        sll $t6, $t5, 2
+        subu $t6, $t2, $t6
+for2:   bge $t1, $t6, done2       # for(*; p < pUltimo - i; *)
+        lw $t3, 0($t1)
+        lw $t4, 4($t1)
+        ble $t3, $t4, fi          # if(*p > *(p+1))
+        sw $t4, 0($t1)            # *p = *(p+1)
+        sw $t3, 4($t1)            # *(p+1) = aux
+        li $t0, 1                 # houveTroca = 1
+fi:     addi $t1, $t1, 4          # p++
         b for2
-done2:  addi $t1, $t1, 1          # i++
-        b for1
+done2:  addi $t5, $t5, 1          # i++
+        beq $t0, $0, done1        # while(houveTroca == TRUE)
+        b do1
 done1:  la $a0, lista
         li $a1, SIZE
         jal printArray            # printArray(lista, SIZE)
